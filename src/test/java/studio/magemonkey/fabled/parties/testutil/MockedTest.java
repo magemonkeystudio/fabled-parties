@@ -1,8 +1,12 @@
 package studio.magemonkey.fabled.parties.testutil;
 
 import lombok.extern.log4j.Log4j2;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,6 +16,8 @@ import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import studio.magemonkey.codex.compat.NMS;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.ExpSource;
@@ -25,7 +31,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,6 +72,13 @@ public abstract class MockedTest {
 
                     return classMock;
                 });
+
+        NMS nms = mock(NMS.class);
+        when(nms.getVersion()).thenReturn("test");
+        when(nms.fixColors(anyString())).thenAnswer(ans -> ans.getArgument(0));
+
+        VersionManager.setNms(nms);
+
         assertEquals(5, Server.getLevel(UUID.randomUUID()));
     }
 
