@@ -23,16 +23,19 @@ public class CmdMsg implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
 
         // Requires at least one argument
         if (args.length == 0) {
-            command.displayHelp(sender, 1);
+            if (!silent) {
+                command.displayHelp(sender, 1);
+            }
             return;
         }
 
@@ -53,7 +56,9 @@ public class CmdMsg implements IFunction {
 
         // Not in a party
         else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
         }
     }
 }

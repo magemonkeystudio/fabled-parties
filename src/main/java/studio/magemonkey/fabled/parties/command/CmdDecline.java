@@ -24,9 +24,10 @@ public class CmdDecline implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
@@ -35,12 +36,16 @@ public class CmdDecline implements IFunction {
         Party party = fabledParties.getParty(player);
         if (party != null && party.isInvited(player)) {
             party.decline(player);
-            party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_DECLINED,
-                    true,
-                    Filter.PLAYER.setReplacement(player.getName())));
-            fabledParties.sendMessage(player, IndividualNodes.DECLINED);
+            if (!silent) {
+                party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_DECLINED,
+                        true,
+                        Filter.PLAYER.setReplacement(player.getName())));
+                fabledParties.sendMessage(player, IndividualNodes.DECLINED);
+            }
         } else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_INVITES);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_INVITES);
+            }
         }
     }
 }

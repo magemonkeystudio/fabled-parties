@@ -17,41 +17,51 @@ import studio.magemonkey.fabled.parties.lang.IndividualNodes;
  */
 public class CmdLeader implements IFunction {
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
 
         // Check the sender's party status
         Party party = fabledParties.getParty(player);
         if (party == null) {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
             return;
         }
 
         // No arguments, display the current leader
         if (args.length == 0) {
-            fabledParties.sendMessage(player,
-                    IndividualNodes.PARTY_LEADER,
-                    Filter.PLAYER.setReplacement(party.getLeader().getName()));
+            if (!silent) {
+                fabledParties.sendMessage(player,
+                        IndividualNodes.PARTY_LEADER,
+                        Filter.PLAYER.setReplacement(party.getLeader().getName()));
+            }
             return;
         }
 
         // Doesn't have permission
         if (!party.isLeader(player)) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+            }
             return;
         }
 
         // Validate the player
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            }
             return;
         }
 
         // Check the target's party status
         if (!party.isMember(target)) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_IN_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_IN_PARTY);
+            }
             return;
         }
 

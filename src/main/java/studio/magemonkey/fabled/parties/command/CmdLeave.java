@@ -23,9 +23,10 @@ public class CmdLeave implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
@@ -33,15 +34,19 @@ public class CmdLeave implements IFunction {
         // Check the sender's party status
         Party party = fabledParties.getParty(player);
         if (party != null && party.isMember(player)) {
-            party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_LEFT,
-                    true,
-                    Filter.PLAYER.setReplacement(player.getName())));
+            if (!silent) {
+                party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_LEFT,
+                        true,
+                        Filter.PLAYER.setReplacement(player.getName())));
+            }
             party.removeMember(player);
             if (party.isEmpty()) {
                 fabledParties.removeParty(party);
             }
         } else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
         }
     }
 }

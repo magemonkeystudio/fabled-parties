@@ -23,9 +23,14 @@ public class CmdAccept implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command,
+                        Plugin plugin,
+                        CommandSender sender,
+                        String[] args,
+                        boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
@@ -35,12 +40,15 @@ public class CmdAccept implements IFunction {
         if (party != null && party.isInvited(player)) {
             party.accept(player);
 
-            // Join message
-            party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_JOINED,
-                    true,
-                    Filter.PLAYER.setReplacement(player.getName())));
+            if (!silent) {
+                // Join message
+                party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_JOINED,
+                        true,
+                        Filter.PLAYER.setReplacement(player.getName())));
+            }
         } else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_INVITES);
+            if (!silent)
+                fabledParties.sendMessage(player, ErrorNodes.NO_INVITES);
         }
     }
 }

@@ -21,15 +21,18 @@ public class CmdReload implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         FabledParties fabledParties = (FabledParties) plugin;
         fabledParties.loadConfiguration();
 
-        fabledParties.getLogger().info(MESSAGE);
-        if (sender instanceof Player) {
-            sender.sendMessage(ChatColor.GREEN + "[FabledParties] " + MESSAGE);
+        if (!silent) {
+            fabledParties.getLogger().info(MESSAGE);
+            if (sender instanceof Player) {
+                sender.sendMessage(ChatColor.GREEN + "[FabledParties] " + MESSAGE);
+            }
         }
     }
 }

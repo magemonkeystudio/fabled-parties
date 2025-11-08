@@ -28,9 +28,10 @@ public class CmdInfo implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
@@ -38,21 +39,25 @@ public class CmdInfo implements IFunction {
         // Check the sender's party status
         Party party = fabledParties.getParty(player);
         if (party != null && party.isMember(player)) {
-            StringBuilder members = new StringBuilder();
-            for (UUID id : party.getMembers()) {
-                members.append(Bukkit.getOfflinePlayer(id).getName());
-                members.append(", ");
+            if (!silent) {
+                StringBuilder members = new StringBuilder();
+                for (UUID id : party.getMembers()) {
+                    members.append(Bukkit.getOfflinePlayer(id).getName());
+                    members.append(", ");
+                }
+                fabledParties.sendMessage(
+                        player,
+                        IndividualNodes.INFO,
+                        new CustomFilter("{leader}", party.getLeader().getName()),
+                        new CustomFilter("{members}", members.substring(0, members.length() - 2)),
+                        new CustomFilter("{size}", party.getPartySize() + ""),
+                        new CustomFilter("{break}", TextSizer.createLine("", "-", ChatColor.DARK_GRAY))
+                );
             }
-            fabledParties.sendMessage(
-                    player,
-                    IndividualNodes.INFO,
-                    new CustomFilter("{leader}", party.getLeader().getName()),
-                    new CustomFilter("{members}", members.substring(0, members.length() - 2)),
-                    new CustomFilter("{size}", party.getPartySize() + ""),
-                    new CustomFilter("{break}", TextSizer.createLine("", "-", ChatColor.DARK_GRAY))
-            );
         } else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
         }
     }
 }

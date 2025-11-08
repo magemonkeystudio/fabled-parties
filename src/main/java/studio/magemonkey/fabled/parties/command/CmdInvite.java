@@ -25,29 +25,36 @@ public class CmdInvite implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
 
         // Requires at least one argument
         if (args.length == 0) {
-            command.displayHelp(sender, 1);
+            if (!silent) {
+                command.displayHelp(sender, 1);
+            }
             return;
         }
 
         // Cannot be yourself
         if (args[0].equalsIgnoreCase(player.getName())) {
-            fabledParties.sendMessage(player, ErrorNodes.NO_INVITE_SELF);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_INVITE_SELF);
+            }
             return;
         }
 
         // Validate the player
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            }
             return;
         }
 
@@ -57,13 +64,17 @@ public class CmdInvite implements IFunction {
 
             // Party is full
             if (party.isFull()) {
-                fabledParties.sendMessage(player, ErrorNodes.PARTY_FULL);
+                if (!silent) {
+                    fabledParties.sendMessage(player, ErrorNodes.PARTY_FULL);
+                }
                 return;
             }
 
             // Doesn't have permission
             if (fabledParties.isLeaderInviteOnly() && !party.isLeader(player)) {
-                fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+                if (!silent) {
+                    fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+                }
                 return;
             }
         }
@@ -71,7 +82,9 @@ public class CmdInvite implements IFunction {
         // Check the target's party status
         Party targetParty = fabledParties.getParty(target);
         if (targetParty != null && !targetParty.isEmpty()) {
-            fabledParties.sendMessage(player, ErrorNodes.IN_OTHER_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.IN_OTHER_PARTY);
+            }
             return;
         }
 
@@ -88,9 +101,11 @@ public class CmdInvite implements IFunction {
 
         // Invite the target
         party.invite(target);
-        party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_INVITED,
-                true,
-                Filter.PLAYER.setReplacement(target.getName())));
-        fabledParties.sendMessage(target, IndividualNodes.INVITED, Filter.PLAYER.setReplacement(player.getName()));
+        if (!silent) {
+            party.sendMessages(fabledParties.getMessage(PartyNodes.PLAYER_INVITED,
+                    true,
+                    Filter.PLAYER.setReplacement(target.getName())));
+            fabledParties.sendMessage(target, IndividualNodes.INVITED, Filter.PLAYER.setReplacement(player.getName()));
+        }
     }
 }

@@ -22,9 +22,10 @@ public class CmdToggle implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments provided
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
 
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
@@ -34,16 +35,20 @@ public class CmdToggle implements IFunction {
         if (party != null && !party.isEmpty()) {
 
             fabledParties.toggle(player.getName());
-            if (fabledParties.isToggled(player.getName())) {
-                fabledParties.sendMessage(player, IndividualNodes.CHAT_ON);
-            } else {
-                fabledParties.sendMessage(player, IndividualNodes.CHAT_OFF);
+            if (!silent) {
+                if (fabledParties.isToggled(player.getName())) {
+                    fabledParties.sendMessage(player, IndividualNodes.CHAT_ON);
+                } else {
+                    fabledParties.sendMessage(player, IndividualNodes.CHAT_OFF);
+                }
             }
         }
 
         // Not in a party
         else {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
         }
     }
 }

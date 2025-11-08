@@ -17,53 +17,67 @@ import studio.magemonkey.fabled.parties.lang.IndividualNodes;
  */
 public class CmdKick implements IFunction {
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         FabledParties fabledParties = (FabledParties) plugin;
         Player        player        = (Player) sender;
 
         // Requires at least one argument
         if (args.length == 0) {
-            command.displayHelp(sender, 1);
+            if (!silent) {
+                command.displayHelp(sender, 1);
+            }
             return;
         }
 
         // Cannot be yourself
         if (args[0].equalsIgnoreCase(player.getName())) {
-            fabledParties.sendMessage(player, ErrorNodes.NO_KICK_SELF);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_KICK_SELF);
+            }
             return;
         }
 
         // Validate the player
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_ONLINE);
+            }
             return;
         }
 
         // Check the sender's party status
         Party party = fabledParties.getParty(player);
         if (party == null) {
-            fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NO_PARTY);
+            }
             return;
         }
 
         // Doesn't have permission
         if (!party.isLeader(player)) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_LEADER);
+            }
             return;
         }
 
         // Check the target's party status
         if (!party.isMember(target)) {
-            fabledParties.sendMessage(player, ErrorNodes.NOT_IN_PARTY);
+            if (!silent) {
+                fabledParties.sendMessage(player, ErrorNodes.NOT_IN_PARTY);
+            }
             return;
         }
 
         // Remove the player from the party
         party.removeMember(target);
-        fabledParties.sendMessage(player,
-                IndividualNodes.PLAYER_KICKED,
-                Filter.PLAYER.setReplacement(target.getName()));
-        fabledParties.sendMessage(target, IndividualNodes.KICKED, Filter.PLAYER.setReplacement(player.getName()));
+        if (!silent) {
+            fabledParties.sendMessage(player,
+                    IndividualNodes.PLAYER_KICKED,
+                    Filter.PLAYER.setReplacement(target.getName()));
+            fabledParties.sendMessage(target, IndividualNodes.KICKED, Filter.PLAYER.setReplacement(player.getName()));
+        }
     }
 }
