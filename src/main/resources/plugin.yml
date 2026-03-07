@@ -2,7 +2,7 @@ name: ${project.name}
 main: studio.magemonkey.fabled.parties.FabledParties
 version: ${project.version}
 api-version: 1.16
-authors: [ Eniripsa96, Sentropic, MageMonkeyStudio ]
+authors: [ Eniripsa96, Sentropic, VoidEdge ]
 depend: [ Fabled ]
 softdepend: [ Instances, PlaceholderAPI ]
 

@@ -10,7 +10,7 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import java.util.UUID;
 
 /**
- * Parties © 2024
+ * Parties © 2026 VoidEdge
  * inject.studio.magemonkey.fabled.parties.Server
  * <p>
  * Wrapper around static methods than can have alternate implementations
