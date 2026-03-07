@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 @Log4j2
 public class DependencyResolver {
-    private static List<String> repositories = List.of("https://central.sonatype.com/repository/maven-snapshots/");
+    private static List<String> repositories = List.of("https://repo.travja.dev/snapshots/");
 
     public static File resolve(String dependency) throws FileNotFoundException {
         String[] pieces = dependency.split(":");

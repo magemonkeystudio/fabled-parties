@@ -4,8 +4,8 @@
 
 # FabledParties
 
-If you wish to use FabledParties as a dependency in your projects, FabledParties is available through Maven Central
-or snapshots through Sonatype.
+If you wish to use FabledParties as a dependency in your projects, FabledParties is available through our repository.
+
 
 ```xml
 <repository>
